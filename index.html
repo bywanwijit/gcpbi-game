@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>GC-PBI: Pro Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">🐳 GC-PBI <span style="font-size: 12px; color: #ffd700; border: 1px solid #ffd700; padding: 2px 5px; border-radius: 4px; margin-left: 10px;">Pro</span></div>
+        
+        <div class="mission-header" style="flex:1; text-align:center; padding: 0 15px;">
+            <span id="mission-title-header" style="color: #ffe600; font-weight: bold; font-size: 20px;"></span> 
+            <span id="mission-desc-header" style="font-weight: normal; font-size: 16px; margin-left: 10px;"></span>
+        </div>
+
+        <div class="player-status">
+            <span>👤 <span id="player-name">ผู้เล่น</span></span>
+            <!-- แสดงเฉพาะแบดจ์ล่าสุด -->
+            <div id="badges-container" class="badges" title="แบดจ์ล่าสุดที่ได้รับ"></div>
+            <span class="status-box">🏆 <span id="score-display">0</span></span>
+            <span class="status-box timer" id="timer-box">⏱️ <span id="time-display">00:00</span></span>
+            <button onclick="pauseTimer()" class="pause-btn" title="คลิกเพื่อหยุดเวลาชั่วคราว">⏸️ หยุดเวลา</button>
+            <button onclick="retryMission()" class="retry-btn-header" title="เริ่มด่านนี้ใหม่เพื่อทำเวลาที่ดีกว่า">🔄 เริ่มใหม่</button>
+            <span onclick="toggleManual()" class="btn-manual">📖 คู่มือ</span>
+        </div>
+    </header>
+    
+    <div class="app-container">
+        <!-- แถบหมวดหมู่ -->
+        <div class="categories-bar">
+            <button class="cat-btn active" onclick="switchCategory('struct', this)"><div class="cat-circle c-struct"></div>โครงสร้าง</button>
+            <button class="cat-btn" onclick="switchCategory('io', this)"><div class="cat-circle c-io"></div>I/O</button>
+            <button class="cat-btn" onclick="switchCategory('control', this)"><div class="cat-circle c-control"></div>ทางเลือก</button>
+            <button class="cat-btn" onclick="switchCategory('loop', this)"><div class="cat-circle c-loop"></div>ทำซ้ำ</button>
+            <button class="cat-btn" onclick="switchCategory('process', this)"><div class="cat-circle c-func"></div>ประมวลผล</button>
+        </div>
+        
+        <!-- คลังบล็อกคำสั่ง -->
+        <div class="toolbox-area">
+            <div id="cat-struct" class="toolbox-group active">
+                <h3>โครงสร้างและตัวแปร</h3>
+                <div class="block b-struct" draggable="true" data-val="include">#include &lt;stdio.h&gt;</div>
+                <div class="block b-struct" draggable="true" data-val="main">int main() {</div>
+                <div class="block b-struct" draggable="true" data-val="return">return 0; }</div>
+                <div class="block b-struct" draggable="true" data-val="int_age">int age;</div>
+                <div class="block b-struct" draggable="true" data-val="var_3">int age; float weight; char blood_type;</div>
+                <div class="block b-struct" draggable="true" data-val="var_bmi">float weight, height, bmi;</div>
+                <div class="block b-struct" draggable="true" data-val="int_score">int score;</div>
+                <div class="block b-struct" draggable="true" data-val="int_choice">int choice;</div>
+                <div class="block b-struct" draggable="true" data-val="int_secret">int secret = 42;</div>
+                <div class="block b-struct" draggable="true" data-val="int_guess">int guess = 0;</div>
+            </div>
+            
+            <div id="cat-io" class="toolbox-group">
+                <h3>แสดงผลและรับค่า (I/O)</h3>
+                <div class="block b-io" draggable="true" data-val="printf_h1">printf("Hello, Computer!\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_h2">printf("My name is Somchai Jai-dee (Junior).\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_h3">printf("I am in Grade 8.\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_ask_age">printf("How old are you?: ");</div>
+                <div class="block b-io" draggable="true" data-val="scanf_age">scanf("%d", &age);</div>
+                <div class="block b-io" draggable="true" data-val="printf_prof">printf("\n--- My Profile ---\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_name">printf("Name:\tJunior Programmer\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_show_age">printf("Age:\t%d years old\n", age);</div>
+                <div class="block b-io" draggable="true" data-val="printf_score">printf("Score:\t100%%\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_ask_weight">printf("Enter your weight (kg): ");</div>
+                <div class="block b-io" draggable="true" data-val="scanf_weight">scanf("%f", &weight);</div>
+                <div class="block b-io" draggable="true" data-val="printf_ask_blood">printf("Enter your blood type (A, B, O): ");</div>
+                <div class="block b-io" draggable="true" data-val="scanf_blood">scanf(" %c", &blood_type);</div>
+                <div class="block b-io" draggable="true" data-val="printf_health">printf("\n--- Health Profile ---\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_show_age_only">printf("Age: %d years old\n", age);</div>
+                <div class="block b-io" draggable="true" data-val="printf_show_weight">printf("Weight: %.2f kg\n", weight);</div>
+                <div class="block b-io" draggable="true" data-val="printf_show_blood">printf("Blood Type: %c\n", blood_type);</div>
+                <div class="block b-io" draggable="true" data-val="printf_welcome_bmi">printf("--- Welcome to BMI Calculator ---\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_ask_height">printf("Enter your height (m): ");</div>
+                <div class="block b-io" draggable="true" data-val="scanf_height">scanf("%f", &height);</div>
+                <div class="block b-io" draggable="true" data-val="printf_show_bmi">printf("Your BMI is: %.2f\n", bmi);</div>
+                <div class="block b-io" draggable="true" data-val="printf_ask_score">printf("Enter your score (0-100): ");</div>
+                <div class="block b-io" draggable="true" data-val="scanf_score">scanf("%d", &score);</div>
+                <div class="block b-io" draggable="true" data-val="printf_vending">printf("--- Vending Machine ---\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_cola_menu">printf("1. Cola\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_water_menu">printf("2. Water\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_juice_menu">printf("3. Juice\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_ask_choice">printf("Enter your choice (1-3): ");</div>
+                <div class="block b-io" draggable="true" data-val="scanf_choice">scanf("%d", &choice);</div>
+                <div class="block b-io" draggable="true" data-val="printf_welcome_game">printf("--- Welcome to Number Guessing Game ---\n");</div>
+                <div class="block b-io" draggable="true" data-val="printf_ask_guess">printf("Guess the number: ");</div>
+                <div class="block b-io" draggable="true" data-val="scanf_guess">scanf("%d", &guess);</div>
+            </div>
+
+            <div id="cat-control" class="toolbox-group">
+                <h3>ทางเลือก (Selection)</h3>
+                <div class="block b-control" draggable="true" data-val="if_80">if (score >= 80) {</div>
+                <div class="block b-control" draggable="true" data-val="elseif_70">else if (score >= 70) {</div>
+                <div class="block b-control" draggable="true" data-val="elseif_60">else if (score >= 60) {</div>
+                <div class="block b-control" draggable="true" data-val="elseif_50">else if (score >= 50) {</div>
+                <div class="block b-control" draggable="true" data-val="else">else {</div>
+                <div class="block b-control" draggable="true" data-val="switch_choice">switch (choice) {</div>
+                <div class="block b-control" draggable="true" data-val="case_1">case 1:</div>
+                <div class="block b-control" draggable="true" data-val="case_2">case 2:</div>
+                <div class="block b-control" draggable="true" data-val="case_3">case 3:</div>
+                <div class="block b-control" draggable="true" data-val="break">break;</div>
+                <div class="block b-control" draggable="true" data-val="default">default:</div>
+                <div class="block b-control" draggable="true" data-val="break_close">break; }</div>
+                <div class="block b-control" draggable="true" data-val="if_high">if (guess > secret) {</div>
+                <div class="block b-control" draggable="true" data-val="elseif_low">else if (guess &lt; secret) {</div>
+            </div>
+
+            <div id="cat-loop" class="toolbox-group">
+                <h3>ทำซ้ำ (Loop)</h3>
+                <div class="block b-loop" draggable="true" data-val="while_loop">while (guess != secret) {</div>
+                <div class="block b-loop" draggable="true" data-val="close_while">} // ปิด while loop</div>
+            </div>
+
+            <div id="cat-process" class="toolbox-group">
+                <h3>ประมวลผล (Process)</h3>
+                <div class="block b-func" draggable="true" data-val="calc_bmi">bmi = weight / (height * height);</div>
+                <div class="block b-func" draggable="true" data-val="printf_a">printf("Grade: A\n"); }</div>
+                <div class="block b-func" draggable="true" data-val="printf_b">printf("Grade: B\n"); }</div>
+                <div class="block b-func" draggable="true" data-val="printf_c">printf("Grade: C\n"); }</div>
+                <div class="block b-func" draggable="true" data-val="printf_d">printf("Grade: D\n"); }</div>
+                <div class="block b-func" draggable="true" data-val="printf_f">printf("Grade: F\n");</div>
+                <div class="block b-func" draggable="true" data-val="printf_try_again">printf("Try again! You can do it!\n"); }</div>
+                <div class="block b-func" draggable="true" data-val="printf_get_cola">printf("Here is your Cola. Enjoy!\n");</div>
+                <div class="block b-func" draggable="true" data-val="printf_get_water">printf("Here is your Water. Enjoy!\n");</div>
+                <div class="block b-func" draggable="true" data-val="printf_get_juice">printf("Here is your Juice. Enjoy!\n");</div>
+                <div class="block b-func" draggable="true" data-val="printf_invalid">printf("Invalid choice. Please try again!\n");</div>
+                <div class="block b-func" draggable="true" data-val="printf_high">printf("Too High!\n"); }</div>
+                <div class="block b-func" draggable="true" data-val="printf_low">printf("Too Low!\n"); }</div>
+                <div class="block b-func" draggable="true" data-val="printf_bingo">printf("Bingo! You got it!\n");</div>
+            </div>
+        </div>
+        
+        <!-- ลานกว้างสำหรับต่อบล็อก -->
+        <div class="workspace">
+            <div class="dropzone" id="dz">
+                <div class="hint-text" id="hint">ลากบล็อกมาวางต่อกันที่นี่<br><span style="font-size:12px; font-weight:normal;">(ดับเบิลคลิกที่บล็อกเพื่อลบทิ้ง)</span></div>
+            </div>
+        </div>
+        
+        <!-- พื้นที่แสดงผลด้านขวา -->
+        <div class="right-panel">
+            <div class="stage-controls">
+                <div class="stage-buttons">
+                    <button class="action-btn run-btn" onclick="runCode()" title="ตรวจสอบความถูกต้อง">▶ RUN</button>
+                    <button class="action-btn clear-btn" onclick="resetWorkspace()" title="ลบโค้ดทั้งหมด">🗑️ ล้างกระดาน</button>
+                </div>
+            </div>
+            <div class="console-screen" id="output">
+                รอการประมวลผล... กดปุ่ม RUN เพื่อเริ่ม
+            </div>
+            
+            <div class="mission-panel">
+                <div class="sprite-info">
+                    <span>💻 ตัวอย่างผลลัพธ์ (Expected Output)</span>
+                    <span id="mission-reward" style="color: #1f8ad1;"></span>
+                </div>
+                <div id="mission-expected-output" style="background:#000; color:#0f0; padding:10px; font-family:'Courier New', Courier, monospace; font-size:12px; border-radius:4px; margin-bottom:10px; line-height:1.5;">
+                    <!-- แสดงตัวอย่างโค้ดที่ต้องการ -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ฉลองผ่านด่าน -->
+    <div id="successModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box" style="text-align: center; border: 4px solid #2ecc71; min-width: 300px;">
+            <div style="font-size: 60px; animation: bounce 1s infinite;">🐳💦🎉</div>
+            <h2 style="color:#2ecc71; margin-top: 10px;">ยอดเยี่ยม! ผ่านด่านแล้ว!</h2>
+            <div id="success-msg-details" style="margin-bottom: 20px; font-size: 16px; line-height: 1.6;"></div>
+            <button onclick="nextMission()" class="btn-success" style="font-size: 18px; padding: 15px;">➡️ ไปด่านต่อไปเลย!</button>
+        </div>
+    </div>
+
+    <!-- Modal ถามชื่อ / โหลดเซฟเกม -->
+    <div id="nameModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="margin-top:0; color:#1f8ad1;">🐳 ยินดีต้อนรับสู่ GC-PBI</h2>
+            <div id="new-game-section">
+                <p>กรุณาพิมพ์ชื่อของนักเรียนเพื่อเริ่มภารกิจ:</p>
+                <input type="text" id="playerNameInput" placeholder="ชื่อนักเรียน..." style="padding:10px; width:80%; font-size:16px; border:2px solid #1f8ad1; border-radius:5px; margin-bottom:15px; text-align: center;">
+                <br>
+                <button onclick="startGame(false)" class="btn-primary">🚀 เริ่มเกมใหม่เลย!</button>
+            </div>
+            <div id="load-game-section" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ccc;">
+                <p style="color: #2ecc71; font-weight: bold;">พบข้อมูลการเล่นค้างไว้!</p>
+                <p>ยินดีต้อนรับกลับมาครับ <strong id="saved-name">...</strong><br>คุณเล่นถึง <strong>ด่านที่ <span id="saved-level"></span></strong></p>
+                <button onclick="startGame(true)" class="btn-success">🎮 เล่นต่อจากเดิม</button>
+                <button onclick="clearSaveData()" class="btn-danger" style="margin-top: 10px;">🗑️ ลบข้อมูลเริ่มใหม่หมด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal คู่มือการเล่น -->
+    <div id="manualModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box" style="width: 80%; max-width: 600px; text-align: left;">
+            <h2 style="color:#1f8ad1; border-bottom: 2px solid #1f8ad1; padding-bottom: 10px;">📖 คู่มือการเล่น GC-PBI</h2>
+            <ul style="line-height: 1.8;">
+                <li><strong>เป้าหมาย:</strong> ลากบล็อกคำสั่งมาเรียงให้ผลลัพธ์ตรงกับ <strong>💻 ตัวอย่างผลลัพธ์</strong> ด้านมุมขวาล่าง</li>
+                <li><strong>การรันโปรแกรม:</strong> กดปุ่ม <strong>▶ RUN</strong> เพื่อตรวจคำตอบ</li>
+                <li><strong>การเล่นใหม่ (ล่าโบนัส):</strong> กดปุ่ม <strong>🔄 เริ่มใหม่</strong> ตรงแถบด้านบน เพื่อล้างกระดานและเริ่มจับเวลาด่านนั้นๆ ใหม่อีกครั้ง เล่นแก้ตัวได้ไม่จำกัด!</li>
+                <li><strong>ระบบเวลา & คะแนนทบยอด:</strong>
+                    <ul>
+                        <li>หากรันผ่าน <strong>ก่อนหมดเวลา</strong> จะได้คะแนนเต็ม + <strong>ไอคอนสัตว์ทะเลโบนัส</strong></li>
+                        <li>เวลาที่เหลือจากด่านนี้ จะถูกนำไป <strong>ทบเป็นเวลาโบนัส</strong> ในด่านถัดไป!</li>
+                        <li>หากรันผ่าน <strong>เกินเวลา</strong> จะได้แค่คะแนนพื้นฐาน และไม่มีเวลาทบไปด่านต่อไป</li>
+                    </ul>
+                </li>
+                <li><strong>การหยุดเวลา:</strong> กด <strong>⏸️ หยุดเวลา</strong> หากต้องการพักคิด เมื่อคลิกลากบล็อกอีกครั้งเวลาจะเดินต่ออัตโนมัติ!</li>
+            </ul>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="toggleManual()" class="btn-primary">เข้าใจแล้ว ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
