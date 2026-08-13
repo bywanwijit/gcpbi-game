@@ -1,5 +1,5 @@
 // =========================================
-// ไฟล์: script.js (เวอร์ชัน Pro - Final Fix)
+// ไฟล์: script.js (เวอร์ชัน Pro - Final Update)
 // =========================================
 
 let dragged;
@@ -29,7 +29,6 @@ const missions = [
     },
     { 
         title: "ด่านที่ 3 (กล่องเก็บข้อมูล 3 สหาย)", desc: "รับค่าอายุ น้ำหนัก กรุ๊ปเลือด และแสดงผล", 
-        // แก้ไข: ใช้ printf_enter_age แทน printf_ask_age ตามเฉลย
         answer: ["include", "main", "var_3", "printf_enter_age", "scanf_age", "printf_ask_weight", "scanf_weight", "printf_ask_blood", "scanf_blood", "printf_health", "printf_show_age_only", "printf_show_weight", "printf_show_blood", "return"], 
         timeLimit: 120, points: 20, badge: "🐠",
         expectedOutput: "Enter your age: 14<br>Enter your weight (kg): 45.5<br>Enter your blood type (A, B, O): O<br><br>--- Health Profile ---<br>Age: 14 years old<br>Weight: 45.50 kg<br>Blood Type: O"
@@ -54,7 +53,12 @@ const missions = [
     },
     { 
         title: "ด่านที่ 7 (Number Guessing Game)", desc: "ใช้ while loop ทายตัวเลข", 
+        // คำตอบหลัก
         answer: ["include", "main", "int_secret", "int_guess", "printf_welcome_game", "while_loop", "printf_ask_guess", "scanf_guess", "if_high", "printf_high", "elseif_low", "printf_low", "close_while", "printf_bingo", "return"], 
+        // คำตอบทางเลือก (สลับเอาตัวแปร guess ขึ้นก่อน secret)
+        alt_answers: [
+            ["include", "main", "int_guess", "int_secret", "printf_welcome_game", "while_loop", "printf_ask_guess", "scanf_guess", "if_high", "printf_high", "elseif_low", "printf_low", "close_while", "printf_bingo", "return"]
+        ],
         timeLimit: 200, points: 30, badge: "🐳",
         expectedOutput: "--- Welcome to Number Guessing Game ---<br>Guess the number: 50<br>Too High!<br>Guess the number: 20<br>Too Low!<br>Guess the number: 42<br>Bingo! You got it!"
     }
@@ -297,10 +301,22 @@ function runCode() {
         output.innerHTML = "<span class='error-text'>Error: ยังไม่มีโค้ดเลยนะ</span>"; return;
     }
 
-    const currentCorrectAnswer = mission.answer.join(',');
     const userSequence = sequence.join(',');
+    
+    // ตรวจสอบคำตอบหลัก
+    let isCorrect = (userSequence === mission.answer.join(','));
+    
+    // ถ้าคำตอบหลักไม่ตรง ให้ลองเช็กคำตอบทางเลือก (ถ้ามี)
+    if (!isCorrect && mission.alt_answers) {
+        for (let i = 0; i < mission.alt_answers.length; i++) {
+            if (userSequence === mission.alt_answers[i].join(',')) {
+                isCorrect = true;
+                break; // เจอคำตอบที่ถูกแล้ว หยุดหา
+            }
+        }
+    }
 
-    if(userSequence === currentCorrectAnswer) {
+    if(isCorrect) {
         missionCompleted = true;
         clearInterval(timerInterval);
         document.getElementById('timer-box').classList.remove('danger', 'paused');
